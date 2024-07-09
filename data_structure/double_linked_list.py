@@ -9,6 +9,41 @@ class DoubleLinkedList:
         self.head = None
         self.tail = None
 
+    def get_head(self):
+        return self.head
+
+    def get_tail(self):
+        return self.tail
+    
+    def size(self):
+        return self._size(self.head)
+
+    def _size(self, current):
+        if not current:
+            return 0
+        return 1 + self._size(current.next)
+
+    def is_empty(self):
+        return self.head is None
+
+    def print(self):
+        return self._print(self.head)
+
+    def _print(self, current):
+        if not current:
+            return []
+        return [current.element] + self._print(current.next)
+
+    def is_present(self, element):
+        return self._is_present(self.head, element, 0)
+
+    def _is_present(self, current, element, position):
+        if not current:
+            return -1
+        if current.element == element:
+            return position
+        return self._is_present(current.next, element, position + 1)
+
     def add(self, element):
         new_node = Node(element)
         if not self.head:
@@ -21,8 +56,8 @@ class DoubleLinkedList:
             current.next = new_node
             new_node.prev = current
             self.tail = new_node
-        else:
-            self._add(current.next, new_node)
+            return
+        self._add(current.next, new_node)
 
     def remove(self, element):
         if not self.head:
@@ -33,10 +68,10 @@ class DoubleLinkedList:
                 self.head.prev = None
             else:
                 self.tail = None
-        else:
-            self._remove_recursive(self.head, element)
+            return
+        self._remove(self.head, element)
 
-    def _remove_recursive(self, current, element):
+    def _remove(self, current, element):
         if not current:
             return
         if current.element == element:
@@ -46,43 +81,11 @@ class DoubleLinkedList:
                 current.prev.next = current.next
             if current == self.tail:
                 self.tail = current.prev
-        else:
-            self._remove_recursive(current.next, element)
-
-    def size(self):
-        return self._size_recursive(self.head)
-
-    def _size_recursive(self, current):
-        if not current:
-            return 0
-        return 1 + self._size_recursive(current.next)
-
-    def getHead(self):
-        return self.head.element if self.head else None
-
-    def getTail(self):
-        return self.tail.element if self.tail else None
-
-    def print(self):
-        return self._print_recursive(self.head)
-
-    def _print_recursive(self, current):
-        if not current:
-            return []
-        return [current.element] + self._print_recursive(current.next)
-
-    def isPresent(self, element):
-        return self._is_present_recursive(self.head, element, 0)
-
-    def _is_present_recursive(self, current, element, position):
-        if not current:
-            return -1
-        if current.element == element:
-            return position
-        return self._is_present_recursive(current.next, element, position + 1)
+            return
+        self._remove(current.next, element)
 
     def remove_at(self, index):
-        if index < 0:
+        if index < 0 or index >= self.size() or not self.head:
             return
         if index == 0:
             if self.head:
@@ -91,10 +94,10 @@ class DoubleLinkedList:
                     self.head.prev = None
                 else:
                     self.tail = None
-        else:
-            self._remove_at_recursive(self.head, index, 0)
+            return
+        self._remove_at(self.head, index, 0)
 
-    def _remove_at_recursive(self, current, index, current_index):
+    def _remove_at(self, current, index, current_index):
         if not current:
             return
         if current_index == index:
@@ -104,21 +107,21 @@ class DoubleLinkedList:
                 current.prev.next = current.next
             if current == self.tail:
                 self.tail = current.prev
-        else:
-            self._remove_at_recursive(current.next, index, current_index + 1)
+            return
+        self._remove_at(current.next, index, current_index + 1)
 
     def element_at(self, index):
-        return self._element_at_recursive(self.head, index, 0)
+        return self._element_at(self.head, index, 0)
 
-    def _element_at_recursive(self, current, index, current_index):
+    def _element_at(self, current, index, current_index):
         if not current:
             return None
         if current_index == index:
             return current.element
-        return self._element_at_recursive(current.next, index, current_index + 1)
+        return self._element_at(current.next, index, current_index + 1)
 
     def insert_at(self, element, index):
-        if index < 0:
+        if index < 0 or index > self.size():
             return
         new_node = Node(element)
         if index == 0:
@@ -128,10 +131,10 @@ class DoubleLinkedList:
             self.head = new_node
             if not self.tail:
                 self.tail = new_node
-        else:
-            self._insert_at_recursive(self.head, new_node, index, 0)
+            return
+        self._insert_at(self.head, new_node, index, 0)
 
-    def _insert_at_recursive(self, current, new_node, index, current_index):
+    def _insert_at(self, current, new_node, index, current_index):
         if not current:
             if current_index == index:
                 self.tail = new_node
@@ -146,62 +149,60 @@ class DoubleLinkedList:
             current.next = new_node
             if new_node.next is None:
                 self.tail = new_node
-        else:
-            self._insert_at_recursive(current.next, new_node, index, current_index + 1)
+            return
+        self._insert_at(current.next, new_node, index, current_index + 1)
 
     def reverse(self):
-        self._reverse_recursive(self.head)
+        self._reverse(self.head)
         self.head, self.tail = self.tail, self.head
 
-    def _reverse_recursive(self, current):
+    def _reverse(self, current):
         if not current:
             return
         current.prev, current.next = current.next, current.prev
         if not current.prev:
             return current
-        return self._reverse_recursive(current.prev)
+        return self._reverse(current.prev)
     
 
 
 if __name__ == "__main__":
     elements = [34, 7, 23, 32, 5, 62, 3, 74, 45, 17, 29, 76, 11, 8, 4, 67, 21, 13, 33, 9]
-    linked_list = DoubleLinkedList()
-    print("isEmpty", linked_list.is_empty())
+    dll = DoubleLinkedList()
+    print("isEmpty", dll.is_empty())
 
     for element in elements:
-        linked_list.add(element)
+        dll.add(element)
 
-    print("isEmpty", linked_list.is_empty())
-    print("size", linked_list.size())
-    print("print", linked_list.print_list())
-    print("isPresent 74", linked_list.isPresent(74))
-    print("isPresent 92", linked_list.isPresent(92))
-    print("get_head", linked_list.get_head().element)
-    print("add 85", linked_list.add(85))
-    print("print", linked_list.print_list())
-    print("size", linked_list.size())
-    print("add 85", linked_list.add(12))
-    print("print", linked_list.print_list())
-    print("size", linked_list.size())
-    print("remove 62", linked_list.remove(62))
-    print("print", linked_list.print_list())
-    print("remove 12", linked_list.remove(12))
-    print("print", linked_list.print_list())
+    print("isEmpty", dll.is_empty())
+    print("size", dll.size())
+    print("get_head", dll.get_head().element)
+    print("get_tail", dll.get_tail().element)
+    print("print", dll.print())
+    print("is_present 74", dll.is_present(74))
+    print("is_present 92", dll.is_present(92))
+    print("add 85", dll.add(85))
+    print("print", dll.print())
+    print("size", dll.size())
 
-    print("remove_at 5", linked_list.remove_at(5))
-    print("print", linked_list.print_list())
+    print("remove 62", dll.remove(62))
+    print("print", dll.print())
+    print("remove 12", dll.remove(12))
+    print("print", dll.print())
 
-    print("remove_at 40", linked_list.remove_at(40))
-    print("print", linked_list.print_list())
+    print("remove_at 5", dll.remove_at(5))
+    print("print", dll.print())
 
-    print("element_at 5", linked_list.element_at(5))
-    print("element_at 40", linked_list.element_at(40))
+    print("remove_at 40", dll.remove_at(40))
+    print("print", dll.print())
 
+    print("element_at 5", dll.element_at(5))
+    print("element_at 40", dll.element_at(40))
 
-    print("insert_at 10 at 3", linked_list.insert_at(10, 3))
-    print("print", linked_list.print_list())
-    print("insert_at 10 at 40", linked_list.insert_at(10, 40))
-    print("print", linked_list.print_list())
+    print("insert_at 10 at 3", dll.insert_at(10, 3))
+    print("print", dll.print())
+    print("insert_at 10 at 40", dll.insert_at(10, 40))
+    print("print", dll.print())
 
-    print("reverse", linked_list.reverse())
-    print("print", linked_list.print_list())
+    print("reverse", dll.reverse())
+    print("print", dll.print())

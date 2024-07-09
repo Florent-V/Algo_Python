@@ -27,10 +27,10 @@ def test_print(linked_list):
     assert linked_list.print_list() == [34, 7, 23, 32, 5, 62, 3, 74]
 
 def test_is_present(linked_list):
-    assert linked_list.isPresent(34) == 0
-    assert linked_list.isPresent(62) == 5
-    assert linked_list.isPresent(74) == 7
-    assert linked_list.isPresent(100) == -1
+    assert linked_list.is_present(34) == 0
+    assert linked_list.is_present(62) == 5
+    assert linked_list.is_present(74) == 7
+    assert linked_list.is_present(100) == -1
 
 def test_remove_at(linked_list):
     linked_list.remove_at(3)
@@ -55,7 +55,7 @@ def test_empty_list():
     assert ll.size() == 0
     assert ll.get_head() is None
     assert ll.print_list() == []
-    assert ll.isPresent(1) == -1
+    assert ll.is_present(1) == -1
 
 def test_single_element():
     ll = LinkedList()
